@@ -28,7 +28,12 @@ data class User(
     val projects: List<Project>,
     val hackathonsJoined: Int,
     val connections: Int,
+    val headline: String = "Backend Developer building useful AI tools",
+    val location: String = "Bengaluru, India",
+    val bio: String = "I enjoy turning complex backend systems into simple, useful products.",
+    val discoverable: Boolean = true,
     val githubConnected: Boolean = false,
+    val linkedinConnected: Boolean = false,
     val resumeUploaded: Boolean = false
 )
 
@@ -57,7 +62,10 @@ data class TeamMember(
 data class Team(
     val name: String,
     val hackathon: String,
-    val members: List<TeamMember>
+    val members: List<TeamMember>,
+    val status: String = "RECRUITING",
+    val maxMembers: Int = 5,
+    val coverage: Map<String, Boolean> = emptyMap()
 )
 
 data class TeammateMatch(
@@ -98,3 +106,22 @@ enum class NotificationType {
     TEAM,
     OPPORTUNITY
 }
+
+data class ConnectionProfile(
+    val id: String,
+    val name: String,
+    val role: String,
+    val skills: List<String>,
+    val status: String = "Connect",
+    val avatarColor: Long = 0xFF5B4CF6
+)
+
+data class TeamInvitation(
+    val id: String,
+    val sender: String,
+    val teamName: String,
+    val hackathon: String,
+    val role: String,
+    val reason: List<String>,
+    val status: String = "Pending"
+)

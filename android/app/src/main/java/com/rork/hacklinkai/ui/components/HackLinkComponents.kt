@@ -82,10 +82,11 @@ fun MatchBadge(
 fun SkillChip(
     label: String,
     selected: Boolean = false,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     AssistChip(
-        onClick = {},
+        onClick = onClick,
         label = { Text(label, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         leadingIcon = if (selected) {
             { Icon(Icons.Outlined.Check, contentDescription = null, modifier = Modifier.size(14.dp)) }
@@ -428,7 +429,7 @@ fun BottomNavigationBar(
     val items = listOf(
         NavItem("home", "Home", Icons.Outlined.RocketLaunch),
         NavItem("hackathons", "Hackathons", Icons.Outlined.Code),
-        NavItem("teamBuilder", "Teams", Icons.Outlined.Groups),
+        NavItem("teams", "Teams", Icons.Outlined.Groups),
         NavItem("internships", "Internships", Icons.Outlined.WorkOutline),
         NavItem("profile", "Profile", Icons.Outlined.PersonAdd)
     )
@@ -438,7 +439,7 @@ fun BottomNavigationBar(
         tonalElevation = 5.dp
     ) {
         items.forEach { item ->
-            val selected = currentRoute == item.route || (item.route == "teamBuilder" && currentRoute == "teammateProfile")
+            val selected = currentRoute == item.route || (item.route == "teams" && currentRoute in setOf("teamBuilder", "teammateProfile", "teamDetails", "invitation"))
             NavigationBarItem(
                 selected = selected,
                 onClick = {

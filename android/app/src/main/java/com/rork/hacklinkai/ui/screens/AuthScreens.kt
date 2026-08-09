@@ -18,25 +18,31 @@ import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.Groups
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.WorkOutline
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,24 +53,26 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(navController: NavController) {
     LaunchedEffect(Unit) {
-        delay(1300)
-        navController.navigate("onboarding") { popUpTo("splash") { inclusive = true } }
+        delay(900)
+        navController.navigate("onboarding") {
+            popUpTo("splash") { inclusive = true }
+        }
     }
     Box(
-        modifier = Modifier.fillMaxSize().background(Brush.linearGradient(listOf(Color(0xFF171337), Color(0xFF5B4CF6)))),
+        modifier = Modifier.fillMaxSize().background(Color.White),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Box(
-                modifier = Modifier.size(92.dp).clip(RoundedCornerShape(28.dp)).background(Color.White.copy(alpha = 0.14f)),
+                modifier = Modifier.size(78.dp).clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Outlined.AutoAwesome, contentDescription = null, tint = Color.White, modifier = Modifier.size(48.dp))
+                Icon(Icons.Outlined.AutoAwesome, contentDescription = "HackLink AI", tint = Color.White, modifier = Modifier.size(40.dp))
             }
-            Spacer(Modifier.height(22.dp))
-            Text("HackLink AI", color = Color.White, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold)
-            Spacer(Modifier.height(5.dp))
-            Text("Build what’s next, together.", color = Color.White.copy(alpha = 0.72f), fontSize = 14.sp)
+            Spacer(Modifier.height(18.dp))
+            Text("HackLink AI", color = MaterialTheme.colorScheme.onBackground, fontSize = 28.sp, fontWeight = FontWeight.ExtraBold)
+            Spacer(Modifier.height(4.dp))
+            Text("Find. Match. Build. Win.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
         }
     }
 }
@@ -72,45 +80,46 @@ fun SplashScreen(navController: NavController) {
 @Composable
 fun OnboardingScreen(navController: NavController) {
     var page by remember { mutableIntStateOf(0) }
-    val titles = listOf("Discover the right hackathons", "Build the right team", "Turn projects into opportunities")
+    val titles = listOf("Find the right hackathon", "Build the right team", "Turn skills into opportunities")
     val bodies = listOf(
-        "Find events based on your actual skills, interests, and the projects you want to build.",
-        "AI finds teammates with complementary skills so every role on your team is covered.",
-        "Discover internships that understand your skills, project experience, and momentum."
+        "Discover hackathons that match your skills, interests and experience.",
+        "Find teammates who complement your skills and fill the gaps in your team.",
+        "Discover internships based on your projects, experience and skills."
     )
     val icons = listOf(Icons.Outlined.Code, Icons.Outlined.Groups, Icons.Outlined.WorkOutline)
     Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 28.dp),
+        modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 22.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            TextButton(onClick = { navController.navigate("login") { popUpTo("onboarding") { inclusive = true } } }) { Text("Skip") }
+            TextButton(onClick = { openLogin(navController) }) { Text("Skip") }
         }
-        Spacer(Modifier.height(34.dp))
+        Spacer(Modifier.height(28.dp))
         Box(
-            modifier = Modifier.size(210.dp).clip(RoundedCornerShape(58.dp)).background(MaterialTheme.colorScheme.primaryContainer),
+            modifier = Modifier.size(210.dp).clip(RoundedCornerShape(54.dp)).background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center
         ) {
-            Box(Modifier.size(130.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)), contentAlignment = Alignment.Center) {
-                Icon(icons[page], contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(64.dp))
+            Box(Modifier.size(124.dp).clip(CircleShape).background(Color.White), contentAlignment = Alignment.Center) {
+                Icon(icons[page], contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(62.dp))
             }
         }
-        Spacer(Modifier.height(48.dp))
+        Spacer(Modifier.height(42.dp))
         Text(titles[page], style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center)
         Spacer(Modifier.height(14.dp))
         Text(bodies[page], color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center, fontSize = 15.sp, lineHeight = 23.sp)
         Spacer(Modifier.weight(1f))
         Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
             repeat(3) { index ->
-                Box(Modifier.size(if (index == page) 26.dp else 7.dp, 7.dp).clip(CircleShape).background(if (index == page) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline))
+                Box(
+                    Modifier.size(if (index == page) 26.dp else 7.dp, 7.dp).clip(CircleShape)
+                        .background(if (index == page) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline)
+                )
             }
         }
-        Spacer(Modifier.height(28.dp))
+        Spacer(Modifier.height(26.dp))
         PrimaryButton(
-            text = if (page == 2) "Get Started" else "Continue",
-            onClick = {
-                if (page == 2) navController.navigate("login") { popUpTo("onboarding") { inclusive = true } } else page += 1
-            },
+            text = if (page == 2) "Get Started" else "Next",
+            onClick = { if (page == 2) openLogin(navController) else page += 1 },
             modifier = Modifier.fillMaxWidth(),
             icon = Icons.Outlined.ArrowForward
         )
@@ -119,48 +128,117 @@ fun OnboardingScreen(navController: NavController) {
 
 @Composable
 fun LoginScreen(navController: NavController) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 30.dp),
+        modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 28.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(Modifier.size(64.dp).clip(RoundedCornerShape(20.dp)).background(MaterialTheme.colorScheme.primaryContainer), contentAlignment = Alignment.Center) {
-            Icon(Icons.Outlined.AutoAwesome, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(32.dp))
-        }
-        Spacer(Modifier.height(22.dp))
+        BrandMark()
+        Spacer(Modifier.height(20.dp))
         Text("Welcome back", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
-        Spacer(Modifier.height(7.dp))
+        Spacer(Modifier.height(6.dp))
         Text("Your next great build starts here.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.height(38.dp))
-        AuthButton("Continue with Google", Icons.Outlined.AutoAwesome) { openHome(navController) }
+        Spacer(Modifier.height(30.dp))
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Email") },
+            leadingIcon = { Icon(Icons.Outlined.MailOutline, contentDescription = null) },
+            singleLine = true,
+            shape = RoundedCornerShape(14.dp)
+        )
+        Spacer(Modifier.height(12.dp))
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Password") },
+            leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = null) },
+            visualTransformation = PasswordVisualTransformation(),
+            singleLine = true,
+            shape = RoundedCornerShape(14.dp)
+        )
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            TextButton(onClick = {}) { Text("Forgot password?") }
+        }
+        PrimaryButton("Login", onClick = { openHome(navController) }, modifier = Modifier.fillMaxWidth())
+        Spacer(Modifier.height(18.dp))
+        Text("or continue with", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         Spacer(Modifier.height(12.dp))
         AuthButton("Continue with GitHub", Icons.Outlined.Code) { openHome(navController) }
-        Spacer(Modifier.height(12.dp))
-        OutlinedButton(onClick = { openHome(navController) }, modifier = Modifier.fillMaxWidth().height(52.dp), shape = RoundedCornerShape(15.dp)) {
-            Text("Continue with Email", fontWeight = FontWeight.SemiBold)
-        }
-        Spacer(Modifier.height(28.dp))
-        Text("By continuing, you agree to HackLink's prototype terms.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, textAlign = TextAlign.Center)
+        Spacer(Modifier.height(10.dp))
+        AuthButton("Continue with LinkedIn", Icons.Outlined.WorkOutline) { openHome(navController) }
         Spacer(Modifier.weight(1f))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("New to HackLink?", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            TextButton(onClick = { openHome(navController) }) { Text("Create account", fontWeight = FontWeight.Bold) }
+            TextButton(onClick = { navController.navigate("signup") }) { Text("Create account", fontWeight = FontWeight.Bold) }
         }
     }
 }
 
 @Composable
-private fun AuthButton(label: String, icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit) {
-    androidx.compose.material3.Button(
+fun SignUpScreen(navController: NavController) {
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    Column(Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 28.dp)) {
+        TextButton(onClick = { navController.popBackStack() }) { Text("Back to login") }
+        Spacer(Modifier.height(12.dp))
+        Text("Create your profile", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
+        Spacer(Modifier.height(7.dp))
+        Text("Bring your skills, projects and next big idea into one place.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
+        Spacer(Modifier.height(26.dp))
+        FormField("Full name", name, { name = it })
+        Spacer(Modifier.height(12.dp))
+        FormField("Email", email, { email = it })
+        Spacer(Modifier.height(12.dp))
+        PasswordField("Password", password, { password = it })
+        Spacer(Modifier.height(12.dp))
+        PasswordField("Confirm password", confirmPassword, { confirmPassword = it })
+        Spacer(Modifier.height(24.dp))
+        PrimaryButton("Create account", onClick = { navController.navigate("profileSetup") }, modifier = Modifier.fillMaxWidth())
+        Spacer(Modifier.height(12.dp))
+        Text("You can edit all profile details later.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+    }
+}
+
+@Composable
+private fun BrandMark() {
+    Box(Modifier.size(64.dp).clip(RoundedCornerShape(20.dp)).background(MaterialTheme.colorScheme.primaryContainer), contentAlignment = Alignment.Center) {
+        Icon(Icons.Outlined.AutoAwesome, contentDescription = "HackLink AI", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(32.dp))
+    }
+}
+
+@Composable
+private fun AuthButton(label: String, icon: ImageVector, onClick: () -> Unit) {
+    Button(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth().height(52.dp),
-        shape = RoundedCornerShape(15.dp),
-        colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface, contentColor = MaterialTheme.colorScheme.onSurface),
-        elevation = androidx.compose.material3.ButtonDefaults.buttonElevation(defaultElevation = 1.dp)
+        shape = RoundedCornerShape(14.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface, contentColor = MaterialTheme.colorScheme.onSurface),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 1.dp)
     ) {
         Icon(icon, contentDescription = null, modifier = Modifier.size(19.dp))
         Spacer(Modifier.size(10.dp))
         Text(label, fontWeight = FontWeight.SemiBold)
     }
+}
+
+@Composable
+private fun FormField(label: String, value: String, onValueChange: (String) -> Unit) {
+    OutlinedTextField(value = value, onValueChange = onValueChange, modifier = Modifier.fillMaxWidth(), label = { Text(label) }, singleLine = true, shape = RoundedCornerShape(14.dp))
+}
+
+@Composable
+private fun PasswordField(label: String, value: String, onValueChange: (String) -> Unit) {
+    OutlinedTextField(value = value, onValueChange = onValueChange, modifier = Modifier.fillMaxWidth(), label = { Text(label) }, visualTransformation = PasswordVisualTransformation(), singleLine = true, shape = RoundedCornerShape(14.dp))
+}
+
+private fun openLogin(navController: NavController) {
+    navController.navigate("login") { popUpTo("onboarding") { inclusive = true } }
 }
 
 private fun openHome(navController: NavController) {

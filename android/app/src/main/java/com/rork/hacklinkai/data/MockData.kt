@@ -4,8 +4,12 @@ import com.rork.hacklinkai.model.Achievement
 import com.rork.hacklinkai.model.Hackathon
 import com.rork.hacklinkai.model.Internship
 import com.rork.hacklinkai.model.Notification
+import com.rork.hacklinkai.model.ConnectionProfile
 import com.rork.hacklinkai.model.NotificationType
 import com.rork.hacklinkai.model.Project
+import com.rork.hacklinkai.model.Team
+import com.rork.hacklinkai.model.TeamInvitation
+import com.rork.hacklinkai.model.TeamMember
 import com.rork.hacklinkai.model.Skill
 import com.rork.hacklinkai.model.TeammateMatch
 import com.rork.hacklinkai.model.User
@@ -18,6 +22,10 @@ object MockData {
         interests = listOf("AI / ML", "Developer Tools", "Open Source"),
         availability = "Evenings & weekends",
         profileStrength = 92,
+        headline = "Backend Developer building useful AI tools",
+        location = "Bengaluru, India",
+        bio = "I enjoy turning complex backend systems into simple, useful products.",
+        discoverable = true,
         skills = listOf(
             Skill("Java", 94, "Detected from 4 GitHub repositories"),
             Skill("Spring Boot", 88, "Detected from 2 backend projects"),
@@ -33,7 +41,9 @@ object MockData {
         ),
         hackathonsJoined = 6,
         connections = 128,
-        githubConnected = true
+        githubConnected = true,
+        linkedinConnected = true,
+        resumeUploaded = true
     )
 
     val hackathons: List<Hackathon> = listOf(
@@ -123,5 +133,39 @@ object MockData {
         Achievement("Hackathon Finalist", "Google Solution Challenge 2025"),
         Achievement("AI Builder", "3 AI projects shipped"),
         Achievement("Open Source Contributor", "12 merged pull requests")
+    )
+
+    val teams: List<Team> = listOf(
+        Team(
+            name = "GenAI Innovators",
+            hackathon = "Google GenAI Hackathon",
+            members = listOf(
+                TeamMember("Sahana B", "Backend + AI · OWNER", listOf("Java", "Spring Boot", "AI")),
+                TeamMember("Ananya Nair", "Frontend Developer", listOf("React", "TypeScript")),
+                TeamMember("Karthik Reddy", "UI/UX Designer", listOf("Figma", "UI Design")),
+                TeamMember("Rahul Sharma", "Cloud Engineer", listOf("GCP", "Docker"))
+            ),
+            status = "RECRUITING",
+            maxMembers = 5,
+            coverage = mapOf("Backend" to true, "AI" to true, "Frontend" to true, "UI / UX" to true, "Cloud" to true)
+        )
+    )
+
+    val invitations: List<TeamInvitation> = listOf(
+        TeamInvitation(
+            id = "invite-1",
+            sender = "Rahul Sharma",
+            teamName = "Impact Builders",
+            hackathon = "AI Innovation Challenge",
+            role = "Cloud Engineer",
+            reason = listOf("Fills the team's cloud gap", "Relevant hackathon", "Strong project evidence")
+        )
+    )
+
+    val connections: List<ConnectionProfile> = listOf(
+        ConnectionProfile("ananya", "Ananya Nair", "Frontend Developer", listOf("React", "TypeScript"), "Connected", 0xFF7C5CFC),
+        ConnectionProfile("karthik", "Karthik Reddy", "UI/UX Designer", listOf("Figma", "Product Design"), "Connect", 0xFF0EA5A8),
+        ConnectionProfile("meera", "Meera Iyer", "Healthcare Domain Expert", listOf("Healthcare", "Product"), "Accept", 0xFFE8793A),
+        ConnectionProfile("rahul", "Rahul Sharma", "Cloud Engineer", listOf("GCP", "Docker"), "Pending", 0xFF2563EB)
     )
 }

@@ -24,12 +24,13 @@ import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Groups
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.QrCode2
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.UploadFile
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -72,7 +73,6 @@ import com.rork.hacklinkai.ui.components.SkillChip
 @Composable
 fun ProfileScreen(navController: NavController, viewModel: HackLinkViewModel) {
     val profile by viewModel.profile.collectAsStateWithLifecycle()
-    var showSettings by remember { mutableStateOf(false) }
     Scaffold(
         topBar = { TopAppBar(title = { Text("Profile", fontWeight = FontWeight.ExtraBold) }, actions = { IconButton(onClick = { navController.navigate("notifications") }) { Icon(Icons.Outlined.Notifications, contentDescription = "Notifications") } }) },
         bottomBar = { BottomNavigationBar(navController, "profile") }
@@ -86,12 +86,12 @@ fun ProfileScreen(navController: NavController, viewModel: HackLinkViewModel) {
                         Text(profile.name, style = androidx.compose.material3.MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold)
                         Text(profile.role, color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
                         Spacer(Modifier.height(5.dp))
-                        Text("Intermediate • ${profile.availability}", color = androidx.compose.material3.MaterialTheme.colorScheme.primary, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                        Text("${profile.experienceLevel} • ${profile.availability}", color = androidx.compose.material3.MaterialTheme.colorScheme.primary, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
                     }
-                    IconButton(onClick = {}) { Icon(Icons.Outlined.Edit, contentDescription = "Edit profile") }
+                    IconButton(onClick = { navController.navigate("profileSetup") }) { Icon(Icons.Outlined.Edit, contentDescription = "Edit profile") }
                 }
             }
-            item { ProfileStrengthCard(strength = profile.profileStrength, onClick = {}) }
+            item { ProfileStrengthCard(strength = profile.profileStrength, onClick = { navController.navigate("skillEvidence") }) }
             item {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     StatCard("12", "Projects", Modifier.weight(1f))
@@ -102,9 +102,9 @@ fun ProfileScreen(navController: NavController, viewModel: HackLinkViewModel) {
             item {
                 SectionHeader("Skills")
                 Spacer(Modifier.height(8.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) { profile.skills.take(3).forEach { SkillChip(it.name, selected = true) } }
+                Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) { profile.skills.take(3).forEach { skill -> SkillChip(skill.name, selected = true, onClick = { navController.navigate("skillEvidence") }) } }
                 Spacer(Modifier.height(7.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) { profile.skills.drop(3).forEach { SkillChip(it.name, selected = true) } }
+                Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) { profile.skills.drop(3).forEach { skill -> SkillChip(skill.name, selected = true, onClick = { navController.navigate("skillEvidence") }) } }
             }
             item {
                 SectionHeader("Achievements")
@@ -120,15 +120,16 @@ fun ProfileScreen(navController: NavController, viewModel: HackLinkViewModel) {
             item {
                 SectionHeader("Profile actions")
                 Spacer(Modifier.height(8.dp))
-                ActionRow("Edit profile", Icons.Outlined.Edit) {}
+                ActionRow("Edit profile", Icons.Outlined.Edit) { navController.navigate("profileSetup") }
                 ActionRow(if (profile.githubConnected) "GitHub connected" else "Connect GitHub", Icons.Outlined.Code) { viewModel.connectGithub() }
+                ActionRow(if (profile.linkedinConnected) "LinkedIn connected" else "Connect LinkedIn", Icons.Outlined.Link) { viewModel.connectLinkedin() }
                 ActionRow(if (profile.resumeUploaded) "Resume analyzed" else "Upload resume", Icons.Outlined.UploadFile) { viewModel.uploadResume() }
                 ActionRow("My QR", Icons.Outlined.QrCode2) { navController.navigate("myQr") }
-                ActionRow("Settings", Icons.Outlined.Settings) { showSettings = true }
+                ActionRow("Connections", Icons.Outlined.Groups) { navController.navigate("connections") }
+                ActionRow("Settings", Icons.Outlined.Settings) { navController.navigate("settings") }
             }
         }
     }
-    if (showSettings) AlertDialog(onDismissRequest = { showSettings = false }, title = { Text("Settings") }, text = { Text("Notification preferences and account controls will live here in the full product.") }, confirmButton = { TextButton(onClick = { showSettings = false }) { Text("Done") } })
 }
 
 @Composable
@@ -206,7 +207,7 @@ fun QrScannerScreen(navController: NavController) {
                     Row(Modifier.padding(15.dp), verticalAlignment = Alignment.CenterVertically) { Avatar("SB", 0xFF0EA5A8, size = 48); Spacer(Modifier.width(11.dp)); Column(Modifier.weight(1f)) { Text("Sahana B", fontWeight = FontWeight.Bold); Text("Backend Developer", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp); Text("Java • Spring Boot • AI/ML", color = MaterialTheme.colorScheme.primary, fontSize = 11.sp) }; Icon(Icons.Outlined.Check, contentDescription = null, tint = MaterialTheme.colorScheme.tertiary) }
                 }
                 Spacer(Modifier.height(13.dp))
-                PrimaryButton("Connect", onClick = { navController.navigate("profile") }, modifier = Modifier.fillMaxWidth())
+                PrimaryButton("Connect", onClick = { navController.navigate("publicProfile") }, modifier = Modifier.fillMaxWidth())
             } else {
                 PrimaryButton("Simulate QR scan", onClick = { scanned = true }, modifier = Modifier.fillMaxWidth(), icon = Icons.Outlined.QrCode2)
                 Spacer(Modifier.height(9.dp))
