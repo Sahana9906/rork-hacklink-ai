@@ -60,7 +60,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.rork.hacklinkai.data.MockData
-import com.rork.hacklinkai.model.NotificationType
 import com.rork.hacklinkai.ui.HackLinkViewModel
 import com.rork.hacklinkai.ui.components.Avatar
 import com.rork.hacklinkai.ui.components.BottomNavigationBar
@@ -217,18 +216,4 @@ fun QrScannerScreen(navController: NavController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun NotificationsScreen(navController: NavController) {
-    Scaffold(topBar = { TopAppBar(title = { Text("Notifications", fontWeight = FontWeight.Bold) }, navigationIcon = { IconButton(onClick = { navController.popBackStack() }) { Icon(Icons.Outlined.ArrowBack, contentDescription = "Back") } }) }) { innerPadding ->
-        LazyColumn(Modifier.fillMaxSize().padding(innerPadding), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            item { Text("Stay in the loop", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold); Spacer(Modifier.height(5.dp)); Text("Momentum is easier when nothing sneaks up on you.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp); Spacer(Modifier.height(10.dp)) }
-            items(MockData.notifications, key = { it.id }) { notification ->
-                val tint = when (notification.type) { NotificationType.DEADLINE -> Color(0xFFD97706); NotificationType.TEAM -> MaterialTheme.colorScheme.primary; NotificationType.OPPORTUNITY -> MaterialTheme.colorScheme.tertiary }
-                Card(colors = CardDefaults.cardColors(containerColor = if (notification.isUnread) tint.copy(alpha = 0.08f) else MaterialTheme.colorScheme.surface), shape = RoundedCornerShape(18.dp), elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
-                    Row(Modifier.padding(15.dp), verticalAlignment = Alignment.Top) { Box(Modifier.size(10.dp).clip(CircleShape).background(if (notification.isUnread) tint else Color.Transparent).padding(top = 4.dp)); Spacer(Modifier.width(10.dp)); Column(Modifier.weight(1f)) { Text(notification.title, fontWeight = FontWeight.Bold, fontSize = 14.sp); Spacer(Modifier.height(3.dp)); Text(notification.body, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 18.sp); Spacer(Modifier.height(7.dp)); Text(notification.timestamp, color = tint, fontSize = 11.sp, fontWeight = FontWeight.SemiBold) } }
-                }
-            }
-        }
-    }
-}
+

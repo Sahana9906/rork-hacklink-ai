@@ -38,6 +38,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -387,7 +388,7 @@ fun InvitationScreen(navController: NavController, viewModel: HackLinkViewModel)
                     Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) { Icon(if (status == "Accepted") Icons.Outlined.Check else Icons.Outlined.Close, contentDescription = null); Spacer(Modifier.width(10.dp)); Text(if (status == "Accepted") "You're now part of ${invitation.teamName}." else "Invitation declined.", fontWeight = FontWeight.Bold) }
                 }
                 Spacer(Modifier.height(12.dp))
-                PrimaryButton("Back to teams", onClick = { navController.navigate("teams") { popUpTo("teams") { inclusive = true } }, modifier = Modifier.fillMaxWidth())
+                PrimaryButton("Back to teams", onClick = { navController.navigate("teams") { popUpTo("teams") { inclusive = true } } }, modifier = Modifier.fillMaxWidth())
             }
         }
     }
@@ -568,9 +569,20 @@ private fun SetupField(label: String, value: String, minLines: Int = 1, onValueC
     OutlinedTextField(value = value, onValueChange = onValueChange, modifier = Modifier.fillMaxWidth(), label = { Text(label) }, minLines = minLines, singleLine = minLines == 1, shape = RoundedCornerShape(14.dp))
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SimpleTopBar(title: String, navController: NavController, showBack: Boolean = true) {
-    TopAppBar(title = { Text(title, fontWeight = FontWeight.Bold) }, navigationIcon = if (showBack) { { IconButton(onClick = { navController.popBackStack() }) { Icon(Icons.Outlined.ArrowBack, contentDescription = "Back") } } } else null, colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background))
+    TopAppBar(
+        title = { Text(title, fontWeight = FontWeight.Bold) },
+        navigationIcon = {
+            if (showBack) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(Icons.Outlined.ArrowBack, contentDescription = "Back")
+                }
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+    )
 }
 
 @Composable
