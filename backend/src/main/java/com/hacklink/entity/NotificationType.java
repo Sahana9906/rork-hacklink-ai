@@ -1,0 +1,11 @@
+package com.hacklink.entity;
+
+public enum NotificationType {
+    TEAM_INVITATION,
+    INVITATION_ACCEPTED,
+    INVITATION_REJECTED,
+    TEAM_FINALIZED,
+    HACKATHON_DEADLINE,
+    INTERNSHIP_MATCH,
+    CONNECTION_REQUEST
+}
