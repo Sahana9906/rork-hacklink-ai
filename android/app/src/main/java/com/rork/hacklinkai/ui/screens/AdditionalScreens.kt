@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -99,7 +100,7 @@ fun ProfileSetupScreen(navController: NavController, viewModel: HackLinkViewMode
     val availabilityOptions = listOf("Weekdays", "Weekends", "Evenings")
 
     Scaffold(topBar = { SimpleTopBar("Profile setup", navController, showBack = false) }) { innerPadding ->
-        LazyColumn(Modifier.fillMaxSize().padding(innerPadding), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        LazyColumn(Modifier.fillMaxSize().padding(innerPadding).imePadding(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             item {
                 Text("Tell us about your developer journey", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold)
                 Spacer(Modifier.height(5.dp))

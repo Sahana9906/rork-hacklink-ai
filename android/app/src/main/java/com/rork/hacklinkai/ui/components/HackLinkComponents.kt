@@ -443,10 +443,12 @@ fun BottomNavigationBar(
             NavigationBarItem(
                 selected = selected,
                 onClick = {
-                    navController.navigate(item.route) {
-                        popUpTo("home") { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
+                    if (currentRoute != item.route) {
+                        navController.navigate(item.route) {
+                            popUpTo("home") { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
                 },
                 icon = { Icon(item.icon, contentDescription = item.label) },

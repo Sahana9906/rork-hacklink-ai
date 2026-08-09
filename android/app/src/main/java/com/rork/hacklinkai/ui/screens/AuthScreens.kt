@@ -9,10 +9,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.AutoAwesome
@@ -54,14 +57,19 @@ import kotlinx.coroutines.delay
 fun SplashScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         delay(900)
-        navController.navigate("onboarding") {
-            popUpTo("splash") { inclusive = true }
+        if (navController.currentDestination?.route == "splash") {
+            navController.navigate("onboarding") {
+                popUpTo("splash") { inclusive = true }
+                launchSingleTop = true
+            }
         }
     }
-    Box(
-        modifier = Modifier.fillMaxSize().background(Color.White),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier.fillMaxSize().background(Color.White).padding(24.dp).imePadding(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
+        Spacer(Modifier.height(1.dp))
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Box(
                 modifier = Modifier.size(78.dp).clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.primary),
@@ -73,6 +81,24 @@ fun SplashScreen(navController: NavController) {
             Text("HackLink AI", color = MaterialTheme.colorScheme.onBackground, fontSize = 28.sp, fontWeight = FontWeight.ExtraBold)
             Spacer(Modifier.height(4.dp))
             Text("Find. Match. Build. Win.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
+        }
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            TextButton(onClick = {
+                navController.navigate("onboarding") {
+                    popUpTo("splash") { inclusive = true }
+                    launchSingleTop = true
+                }
+            }) { Text("Start onboarding") }
+            OutlinedButton(
+                onClick = {
+                    navController.navigate("home") {
+                        popUpTo("splash") { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier.fillMaxWidth().height(52.dp),
+                shape = RoundedCornerShape(14.dp)
+            ) { Text("Open demo workspace", fontWeight = FontWeight.Bold) }
         }
     }
 }
@@ -123,6 +149,9 @@ fun OnboardingScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth(),
             icon = Icons.Outlined.ArrowForward
         )
+        TextButton(onClick = { openHome(navController) }) {
+            Text("Explore demo workspace", fontWeight = FontWeight.SemiBold)
+        }
     }
 }
 
@@ -131,7 +160,7 @@ fun LoginScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 28.dp),
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).imePadding().padding(horizontal = 24.dp, vertical = 28.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         BrandMark()
@@ -170,7 +199,10 @@ fun LoginScreen(navController: NavController) {
         AuthButton("Continue with GitHub", Icons.Outlined.Code) { openHome(navController) }
         Spacer(Modifier.height(10.dp))
         AuthButton("Continue with LinkedIn", Icons.Outlined.WorkOutline) { openHome(navController) }
-        Spacer(Modifier.weight(1f))
+        TextButton(onClick = { openHome(navController) }) {
+            Text("Explore demo workspace", fontWeight = FontWeight.SemiBold)
+        }
+        Spacer(Modifier.height(12.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("New to HackLink?", color = MaterialTheme.colorScheme.onSurfaceVariant)
             TextButton(onClick = { navController.navigate("signup") }) { Text("Create account", fontWeight = FontWeight.Bold) }
@@ -184,7 +216,7 @@ fun SignUpScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    Column(Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 28.dp)) {
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).imePadding().padding(horizontal = 24.dp, vertical = 28.dp)) {
         TextButton(onClick = { navController.popBackStack() }) { Text("Back to login") }
         Spacer(Modifier.height(12.dp))
         Text("Create your profile", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold)
@@ -238,9 +270,17 @@ private fun PasswordField(label: String, value: String, onValueChange: (String) 
 }
 
 private fun openLogin(navController: NavController) {
-    navController.navigate("login") { popUpTo("onboarding") { inclusive = true } }
+    if (navController.currentDestination?.route == "login") return
+    navController.navigate("login") {
+        popUpTo("onboarding") { inclusive = true }
+        launchSingleTop = true
+    }
 }
 
 private fun openHome(navController: NavController) {
-    navController.navigate("home") { popUpTo("login") { inclusive = true } }
+    if (navController.currentDestination?.route == "home") return
+    navController.navigate("home") {
+        popUpTo("login") { inclusive = true }
+        launchSingleTop = true
+    }
 }
